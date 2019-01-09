@@ -1,28 +1,46 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import { connect } from 'react-redux';
+import {addUser, removeAllUsers} from './actionCreators/users';
 
+let id = 0;
 class App extends Component {
+
+  state = {count: 0}
+
+  handleIncrement = () => {
+    this.setState({count: this.state.count + 1})
+  }
+
   render() {
+
+    const {users, addUser, removeAllUsers} = this.props;
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <button onClick={() => addUser(id, `Alexander ${id++}`)}>Добавить пользователя</button>
+        <button onClick={removeAllUsers}>Удалить всех</button>
+
+        <button onClick={this.handleIncrement} >Increment</button>
+
+        <p>{
+          `Value: ${this.state.count}`
+        }</p>
+        {users.map(user => (
+          <p key={user.id}>{`User: ${user.name}, id: ${user.id}`}</p>
+        ))}
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  users: state.users
+})
+
+const mapDispatchToProps = {
+  addUser,
+  removeAllUsers
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
